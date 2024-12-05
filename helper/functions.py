@@ -5,7 +5,7 @@ import jaydebeapi as jdbc
 
 # database connection function
 # note: the connect_database() method gives an error when absolute paths aren't used
-hsqldb_jar_path = "/Users/ramyanayak/Downloads/hsqldb-2.7.4/hsqldb/lib/hsqldb.jar"  # for connecting to db
+hsqldb_jar_path = "/Users/nguyenpham/Downloads/apps/hsqldb-2.7.4/hsqldb/lib/hsqldb.jar"  # for connecting to db
 def connect_database():
     conn = jdbc.connect("org.hsqldb.jdbcDriver","jdbc:hsqldb:mem:movierentaldb",
                         {'user': "SA", 'password': ""}, hsqldb_jar_path)

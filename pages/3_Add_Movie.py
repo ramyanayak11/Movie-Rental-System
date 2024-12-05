@@ -39,5 +39,10 @@ with st.form("add_movie_form"):
     rental_rate = st.number_input("Rental Rate ($)", min_value=0.0, step=0.01)
     submitted = st.form_submit_button("Add Movie")
     if submitted:
-        add_movie(title, release_date.strftime('%Y-%m-%d'), genre, int(length), float(rental_rate))
-        st.success(f"Movie '{title}' added successfully!")
+        if not title.strip():
+            st.error("The movie title cannot be empty. Please enter a valid title.")
+        elif not genre.strip():
+            st.error("The genre field cannot be empty. Please enter a valid genre.")
+        else:
+            add_movie(title, release_date.strftime('%Y-%m-%d'), genre, int(length), float(rental_rate))
+            st.success(f"Movie '{title}' added successfully!")

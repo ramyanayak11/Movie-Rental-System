@@ -1,5 +1,4 @@
 # ADDS A NEW RENTAL ENTRY
-
 import streamlit as st
 from datetime import timedelta
 from helper.functions import connect_database
@@ -9,25 +8,49 @@ if "role" not in st.session_state or st.session_state.role != "Staff":
     st.warning("ACCESS DENIED: You must be a Staff member to access this page.")
     st.stop()
 
+# validate customer ID and movie ID
+def validate_ids(movie_id, customer_id):
+    try:
+        conn = connect_database()
+        c = conn.cursor()
+        
+        # Check if the MovieID exists
+        c.execute("SELECT COUNT(*) FROM Movies WHERE MovieID = ?", (movie_id,))
+        movie_exists = c.fetchone()[0] > 0
+        
+        # Check if the CustomerID exists
+        c.execute("SELECT COUNT(*) FROM Customers WHERE CustomerID = ?", (customer_id,))
+        customer_exists = c.fetchone()[0] > 0
+        
+        conn.close()
+        return movie_exists, customer_exists
+    except Exception as e:
+        st.error(f"Error validating IDs: {e}")
+        return False, False
+
 # add new rental data
 def add_rental(movie_id, customer_id, rental_date, return_deadline):
-    conn = connect_database()
-    c = conn.cursor()
+    try:
+        conn = connect_database()
+        c = conn.cursor()
 
-    c.execute(f"SELECT RentalRate FROM Movies WHERE MovieID = {movie_id}")  # gets rental rate
-    rental_rate = c.fetchone()[0]
+        c.execute("SELECT RentalRate FROM Movies WHERE MovieID = ?", (movie_id,))
+        rental_rate = c.fetchone()[0]
 
-    c.execute(f"SELECT COUNT(*) FROM RentalRecords")
-    row_count = c.fetchone()[0]                     # for rental id (= num rows in table + 1)
+        c.execute("SELECT COUNT(*) FROM RentalRecords")
+        row_count = c.fetchone()[0]  # for rental id (= num rows in table + 1)
 
-    c.execute('''
-    INSERT INTO RentalRecords (RentalID, MovieID, CustomerID, RentalRate, RentalDate, ReturnDeadline)
-    VALUES (?, ?, ?, ?, ?, ?)
-    ''', (row_count + 1, movie_id, customer_id, rental_rate, rental_date, return_deadline))
+        c.execute('''
+        INSERT INTO RentalRecords (RentalID, MovieID, CustomerID, RentalRate, RentalDate, ReturnDeadline)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ''', (row_count + 1, movie_id, customer_id, rental_rate, rental_date, return_deadline))
 
-    conn.commit()
-    conn.close()
-
+        conn.commit()
+        conn.close()
+        return rental_rate
+    except Exception as e:
+        st.error(f"Error adding rental: {e}")
+        return None
 
 # UI details
 st.set_page_config(page_title="Movie Rentals - Add Rental", page_icon="🎬")   # sets page title and logo (on tab)
@@ -41,6 +64,20 @@ with st.form("add_rental_form"):
     rentalDate = st.date_input("Date Rented")
     submitted = st.form_submit_button("Add Rental")
     if submitted:
-        returnDeadline = rentalDate + timedelta(days=7)  # return deadline is 7 days after rented out
-        add_rental(movieID, custID, rentalDate.strftime('%Y-%m-%d'), returnDeadline.strftime('%Y-%m-%d'))
-        st.success(f"Rental added successfully!")
+        movie_exists, customer_exists = validate_ids(movieID, custID)
+        
+        if not movie_exists:
+            st.error(f"Invalid Movie ID: {movieID}. Please check and try again.")
+        elif not customer_exists:
+            st.error(f"Invalid Customer ID: {custID}. Please check and try again.")
+        else:
+            returnDeadline = rentalDate + timedelta(days=7)  # return deadline is 7 days after rented out
+            rental_rate = add_rental(movieID, custID, rentalDate.strftime('%Y-%m-%d'), returnDeadline.strftime('%Y-%m-%d'))
+            if rental_rate:
+                st.success("Rental added successfully!")
+                st.markdown(f"""
+                **Reminder:**
+                - Customer should return the movie by **{returnDeadline}** to avoid late fees.
+                - The rental fee is **${rental_rate:.2f}**.
+                - Late fees are **$0.50 per day** beyond the return deadline.
+                """)

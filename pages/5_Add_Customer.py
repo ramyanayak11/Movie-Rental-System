@@ -37,5 +37,12 @@ with st.form("add_customer_form"):
     phone = st.text_input("Customer Phone")
     submitted = st.form_submit_button("Add Customer")
     if submitted:
-        add_customer(name, email, phone)
-        st.success(f"Customer '{name}' added successfully!")
+        if not name.strip():
+            st.error("The customer name cannot be empty. Please enter a valid name.")
+        elif not email.strip():
+            st.error("The customer email cannot be empty. Please enter a valid email.")
+        elif not phone.strip():
+            st.error("The customer phone cannot be empty. Please enter a valid phone number.")
+        else:
+            add_customer(name.strip(), email.strip(), phone.strip())
+            st.success(f"Customer '{name}' added successfully!")
