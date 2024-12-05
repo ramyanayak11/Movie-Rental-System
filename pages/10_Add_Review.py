@@ -55,7 +55,7 @@ st.subheader("Add a new review")
 with st.form("add_rating_form"):
     custID = st.number_input("Customer ID", min_value=1, step=1)
     movieID = st.number_input("Movie ID", min_value=1, step=1)
-    rating = st.number_input("Rating Score", min_value=1.0, step=0.1, max_value=10.0)
+    rating = st.number_input("Rating Score", min_value=1, step=1, max_value=10)
     review = st.text_input("Review")
     date = st.date_input("Date of Review")
     submitted = st.form_submit_button("Add Review")
