@@ -26,5 +26,7 @@ role = st.selectbox(        # selection retains prev selected option
 if role != "Select Role":   # prints selection confirmation
     st.session_state['role'] = role
     st.success(f"Selected Role: {st.session_state['role']}")
+    st.write(" ")
+    st.write("You can proceed by selecting any page from the navigation menu on the left.")
 else:
     st.write("Please select a role to proceed.")

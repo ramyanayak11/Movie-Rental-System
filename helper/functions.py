@@ -147,7 +147,7 @@ def fetch_table_data(table_name, fromRentals=False, fromRatings=False):
                 FROM RentalRecords
                 JOIN Movies ON RentalRecords.MovieID = Movies.MovieID
             ''')
-    elif fromRatings:  # uses JOIN to get movie title if data is fetched from View Reviews page
+    elif fromRatings:
         c.execute('''
                 SELECT Movies.MovieTitle, Ratings.RatingScore, Ratings.Review, Ratings.RatingDate, Ratings.CustomerID
                 FROM Ratings
