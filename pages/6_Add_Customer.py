@@ -13,13 +13,13 @@ def add_customer(name, email, phone):
     conn = connect_database()
     c = conn.cursor()
 
-    c.execute(f"SELECT COUNT(*) FROM Customers")
-    row_count = c.fetchone()[0]                     # for customer id (= num rows in table + 1)
+    c.execute(f"SELECT MAX(CustomerID) FROM Customers")
+    max_customerID = c.fetchone()[0]            # for setting customer id (= max customerID in the table + 1)
 
     c.execute('''
     INSERT INTO Customers (CustomerID, CustomerName, CustomerEmail, CustomerPhone)
     VALUES (?, ?, ?, ?)
-    ''', (row_count + 1, name, email, phone))
+    ''', (max_customerID + 1, name, email, phone))
 
     conn.commit()
     conn.close()

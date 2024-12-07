@@ -1,32 +1,12 @@
 # ADDS A NEW RENTAL ENTRY
 import streamlit as st
 from datetime import timedelta
-from helper.functions import connect_database
+from helper.functions import connect_database, validate_id
 
 # only staff members can add a rental
 if "role" not in st.session_state or st.session_state.role != "Staff":
     st.warning("ACCESS DENIED: You must be a Staff member to access this page.")
     st.stop()
-
-# validate customer ID and movie ID
-def validate_ids(movie_id, customer_id):
-    try:
-        conn = connect_database()
-        c = conn.cursor()
-        
-        # Check if the MovieID exists
-        c.execute("SELECT COUNT(*) FROM Movies WHERE MovieID = ?", (movie_id,))
-        movie_exists = c.fetchone()[0] > 0
-        
-        # Check if the CustomerID exists
-        c.execute("SELECT COUNT(*) FROM Customers WHERE CustomerID = ?", (customer_id,))
-        customer_exists = c.fetchone()[0] > 0
-        
-        conn.close()
-        return movie_exists, customer_exists
-    except Exception as e:
-        st.error(f"Error validating IDs: {e}")
-        return False, False
 
 # add new rental data
 def add_rental(movie_id, customer_id, rental_date, return_deadline):
@@ -37,13 +17,13 @@ def add_rental(movie_id, customer_id, rental_date, return_deadline):
         c.execute("SELECT RentalRate FROM Movies WHERE MovieID = ?", (movie_id,))
         rental_rate = c.fetchone()[0]
 
-        c.execute("SELECT COUNT(*) FROM RentalRecords")
-        row_count = c.fetchone()[0]  # for rental id (= num rows in table + 1)
+        c.execute("SELECT MAX(RentalID) FROM RentalRecords")
+        max_rentalID = c.fetchone()[0]  # for setting rental id (= max rental in the table + 1)
 
         c.execute('''
         INSERT INTO RentalRecords (RentalID, MovieID, CustomerID, RentalRate, RentalDate, ReturnDeadline)
         VALUES (?, ?, ?, ?, ?, ?)
-        ''', (row_count + 1, movie_id, customer_id, rental_rate, rental_date, return_deadline))
+        ''', (max_rentalID + 1, movie_id, customer_id, rental_rate, rental_date, return_deadline))
 
         conn.commit()
         conn.close()
@@ -64,7 +44,8 @@ with st.form("add_rental_form"):
     rentalDate = st.date_input("Date Rented")
     submitted = st.form_submit_button("Add Rental")
     if submitted:
-        movie_exists, customer_exists = validate_ids(movieID, custID)
+        customer_exists = validate_id("Customers", "CustomerID", custID)
+        movie_exists = validate_id("Movies", "MovieID", movieID)
         
         if not movie_exists:
             st.error(f"Invalid Movie ID: {movieID}. Please check and try again.")

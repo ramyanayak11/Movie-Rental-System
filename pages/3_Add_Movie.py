@@ -13,13 +13,14 @@ def add_movie(title, release_date, genre, length, rental_rate):
     conn = connect_database()
     c = conn.cursor()
 
-    c.execute(f"SELECT COUNT(*) FROM Movies")
-    row_count = c.fetchone()[0]  # for movie id (= num rows in table + 1)
+    c.execute(f"SELECT MAX(MovieID) FROM Movies")
+    max_movieID = c.fetchone()[0]   # for setting movie id (= max movieID in the table + 1)
+                                    # uses MAX instead of COUNT to avoid conflicts with deletion
 
     c.execute('''
     INSERT INTO Movies (MovieID, MovieTitle, ReleaseDate, Genre, Length, RentalRate)
     VALUES (?, ?, ?, ?, ?, ?)
-    ''', (row_count + 1, title, release_date, genre, length, rental_rate))
+    ''', (max_movieID + 1, title, release_date, genre, length, rental_rate))
 
     conn.commit()
     conn.close()
