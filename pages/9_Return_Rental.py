@@ -1,4 +1,5 @@
 # PROCESSES THE RETURN OF A RENTAL
+
 import streamlit as st
 from datetime import datetime
 from helper.functions import connect_database
