@@ -23,8 +23,8 @@ def search_reviews(option, query):
         if option == "Rating ID":
             query = int(query)  # Convert to integer for Rating ID
             c.execute('''
-                SELECT r.RatingID, r.CustomerID, r.MovieID, r.RatingScore, 
-                       r.Review, r.RatingDate, m.MovieTitle
+                SELECT r.RatingID, r.CustomerID, r.MovieID, m.MovieTitle,
+                       r.RatingScore, r.Review, r.RatingDate
                 FROM Ratings r
                 LEFT JOIN Movies m ON r.MovieID = m.MovieID
                 WHERE r.RatingID = ?
@@ -32,8 +32,8 @@ def search_reviews(option, query):
         elif option == "Customer ID":
             query = int(query)  # Convert to integer for Customer ID
             c.execute('''
-                SELECT r.RatingID, r.CustomerID, r.MovieID, r.RatingScore, 
-                       r.Review, r.RatingDate, m.MovieTitle
+                SELECT r.RatingID, r.CustomerID, r.MovieID, m.MovieTitle,
+                       r.RatingScore, r.Review, r.RatingDate
                 FROM Ratings r
                 LEFT JOIN Movies m ON r.MovieID = m.MovieID
                 WHERE r.CustomerID = ?
@@ -41,8 +41,8 @@ def search_reviews(option, query):
         elif option == "Movie ID":
             query = int(query)  # Convert to integer for Movie ID
             c.execute('''
-                SELECT r.RatingID, r.CustomerID, r.MovieID, r.RatingScore, 
-                       r.Review, r.RatingDate, m.MovieTitle
+                SELECT r.RatingID, r.CustomerID, r.MovieID, m.MovieTitle,
+                       r.RatingScore, r.Review, r.RatingDate
                 FROM Ratings r
                 LEFT JOIN Movies m ON r.MovieID = m.MovieID
                 WHERE r.MovieID = ?
@@ -50,8 +50,8 @@ def search_reviews(option, query):
         elif option == "Rating Score":
             query = float(query)  # Convert to float for Rating Score
             c.execute('''
-                SELECT r.RatingID, r.CustomerID, r.MovieID, r.RatingScore, 
-                       r.Review, r.RatingDate, m.MovieTitle
+                SELECT r.RatingID, r.CustomerID, r.MovieID, m.MovieTitle,
+                       r.RatingScore, r.Review, r.RatingDate
                 FROM Ratings r
                 LEFT JOIN Movies m ON r.MovieID = m.MovieID
                 WHERE r.RatingScore = ?
@@ -79,7 +79,7 @@ if search_input:
     reviews, columns = search_reviews(search_option, search_input)
 else:
     reviews = fetch_table_data("Ratings")
-    columns = ["RATINGID", "CUSTOMERID", "MOVIEID", "RATINGSCORE", "REVIEW", "RATINGDATE"]
+    columns = ["RATINGID", "CUSTOMERID", "MOVIEID", "MOVIETITLE", "RATINGSCORE", "REVIEW", "RATINGDATE"]
     if not reviews:  # If no data is returned, show a warning message
         st.warning("No data found in the Ratings table.")
 

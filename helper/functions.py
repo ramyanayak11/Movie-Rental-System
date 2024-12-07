@@ -183,20 +183,20 @@ def add_sample_data():
     conn.close()
 
 # get all data from specified table
-def fetch_table_data(table_name, fromRentals=False, fromRatings=False):
+def fetch_table_data(table_name):
     conn = connect_database()
     c = conn.cursor()
 
     # uses JOIN to get movie title if data is fetched from View Rentals or View Reviews page
-    if fromRentals:
+    if table_name == "RentalRecords":
         c.execute('''
-                SELECT RentalRecords.RentalID, RentalRecords.MovieID, Movies.MovieTitle, RentalRecords.RentalRate, RentalRecords.RentalDate, RentalRecords.ReturnDeadline, RentalRecords.ReturnDate, RentalRecords.LateFee, RentalRecords.TotalPayment
+                SELECT RentalRecords.RentalID, RentalRecords.CustomerID, RentalRecords.MovieID, Movies.MovieTitle, RentalRecords.RentalRate, RentalRecords.RentalDate, RentalRecords.ReturnDeadline, RentalRecords.ReturnDate, RentalRecords.LateFee, RentalRecords.TotalPayment
                 FROM RentalRecords JOIN Movies
                 ON RentalRecords.MovieID = Movies.MovieID
             ''')
-    elif fromRatings:
+    elif table_name == "Ratings":
         c.execute('''
-                SELECT Ratings.RatingID, Movies.MovieTitle, Ratings.RatingScore, Ratings.Review, Ratings.RatingDate, Ratings.CustomerID
+                SELECT Ratings.RatingID, Ratings.CustomerID, Movies.MovieID, Movies.MovieTitle, Ratings.RatingScore, Ratings.Review, Ratings.RatingDate
                 FROM Ratings JOIN Movies
                 ON Ratings.MovieID = Movies.MovieID
             ''')
