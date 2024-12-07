@@ -28,21 +28,21 @@ def search_rentals(option, query):
         if option == "Rental ID":
             query = int(query)  # Convert to integer for Rental ID
             c.execute('''
-                SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalDate, r.ReturnDate, r.TotalPayment
+                SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalRate, r.RentalDate, r.ReturnDeadline, r.ReturnDate, r.LateFee, r.TotalPayment
                 FROM RentalRecords r
                 WHERE r.RentalID = ?
             ''', (query,))
         elif option == "Customer ID":
             query = int(query)  # Convert to integer for Customer ID
             c.execute('''
-                SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalDate, r.ReturnDate, r.TotalPayment
+                SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalRate, r.RentalDate, r.ReturnDeadline, r.ReturnDate, r.LateFee, r.TotalPayment
                 FROM RentalRecords r
                 WHERE r.CustomerID = ?
             ''', (query,))
         elif option == "Movie ID":
             query = int(query)  # Convert to integer for Movie ID
             c.execute('''
-                SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalDate, r.ReturnDate, r.TotalPayment
+                SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalRate, r.RentalDate, r.ReturnDeadline, r.ReturnDate, r.LateFee, r.TotalPayment
                 FROM RentalRecords r
                 WHERE r.MovieID = ?
             ''', (query,))
@@ -64,7 +64,8 @@ if search_input:
     rentals, columns = search_rentals(search_option, search_input)
 else:
     rentals = fetch_table_data("RentalRecords")
-    columns = ["RENTALID", "CUSTOMERID", "MOVIEID", "RENTALDATE", "RETURNDATE", "TOTALPAYMENT"]
+    columns = ["RENTALID", "CUSTOMERID", "MOVIEID", "RENTALRATE", "RENTALDATE", "RETURNDEADLINE", "RETURNDATE",
+               "LATEFEE", "TOTALPAYMENT"]
     if not rentals:  # If no data is returned, show a warning message
         st.warning("No data found in the RentalRecords table.")
 
