@@ -5,9 +5,9 @@ import streamlit as st
 import pandas as pd
 from helper.functions import fetch_table_data, connect_database  # Import connect_database
 
-# only staff members can view rental records
-if "role" not in st.session_state or st.session_state.role != "Staff":
-    st.warning("ACCESS DENIED: You must be a Staff member to access this page.")
+# only staff members or administrators can view rental records
+if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
+    st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
     st.stop()
 
 # UI details
