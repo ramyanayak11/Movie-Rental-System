@@ -3,15 +3,28 @@
 
 import streamlit as st
 import pandas as pd
-from helper.functions import fetch_table_data, connect_database  # Import connect_database
+from helper.functions import fetch_table_data, connect_database, create_menu  # Import connect_database
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - View Reviews", page_icon="🎬")   # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - View Reviews", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed")   # sets page title and logo (on tab)
+create_menu()
 st.title("View Reviews")
 st.subheader("Reviews")
 
+# Buttons for navigation
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("➕ Add Review"):
+        st.query_params.update(page="Add_Reviews", role=st.session_state.role)
+        st.switch_page("pages/11_Add_Reviews.py")
+with col2:
+    if st.button("🗑️ Delete Review"):
+        st.query_params.update(page="Delete_Review", role=st.session_state.role)
+        st.switch_page("pages/12_Delete_Review.py")
+
 # Search options
-search_option = st.selectbox("Search by", ["Rating ID", "Customer ID", "Movie ID", "Rating Score"])
+search_option = st.selectbox("Search by", ["Rating ID", "Customer ID", "Movie ID","Movie Title", "Rating Score"])
 search_input = st.text_input(f"Enter {search_option}")
 
 # Function to search reviews based on the option and input
@@ -27,8 +40,8 @@ def search_reviews(option, query):
                        r.RatingScore, r.Review, r.RatingDate
                 FROM Ratings r
                 LEFT JOIN Movies m ON r.MovieID = m.MovieID
-                WHERE r.RatingID = ?
-            ''', (query,))
+                WHERE r.RatingID LIKE ?
+            ''', (f"{query}%",))
         elif option == "Customer ID":
             query = int(query)  # Convert to integer for Customer ID
             c.execute('''
@@ -36,8 +49,8 @@ def search_reviews(option, query):
                        r.RatingScore, r.Review, r.RatingDate
                 FROM Ratings r
                 LEFT JOIN Movies m ON r.MovieID = m.MovieID
-                WHERE r.CustomerID = ?
-            ''', (query,))
+                WHERE r.CustomerID LIKE ?
+            ''', (f"{query}%",))
         elif option == "Movie ID":
             query = int(query)  # Convert to integer for Movie ID
             c.execute('''
@@ -45,8 +58,17 @@ def search_reviews(option, query):
                        r.RatingScore, r.Review, r.RatingDate
                 FROM Ratings r
                 LEFT JOIN Movies m ON r.MovieID = m.MovieID
-                WHERE r.MovieID = ?
-            ''', (query,))
+                WHERE r.MovieID LIKE ?
+            ''', (f"{query}%",))
+        elif option == "Movie Title":
+            query = query.lower()
+            c.execute('''
+                SELECT r.RatingID, r.CustomerID, r.MovieID, m.MovieTitle,
+                       r.RatingScore, r.Review, r.RatingDate
+                FROM Ratings r
+                LEFT JOIN Movies m ON r.MovieID = m.MovieID
+                WHERE LOWER(m.MovieTitle) LIKE ?
+            ''', (f"%{query}%",))
         elif option == "Rating Score":
             query = float(query)  # Convert to float for Rating Score
             c.execute('''
