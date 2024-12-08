@@ -2,6 +2,7 @@
 # CALLED FROM MULTIPLE PAGES
 
 import jaydebeapi as jdbc
+import streamlit as st
 
 # database connection function
 # note: the connect_database() method gives an error when absolute paths aren't used
@@ -254,3 +255,37 @@ def delete_row(table_name, attribute_name, id):
         conn.close()
     except Exception as e:
         st.error(f"Error deleting row ({attribute_name} = {id}): {e}")
+
+# create menu
+def create_menu():
+    conn = connect_database()
+    c = conn.cursor()
+
+    cols = st.columns(6)  # Create 6 columns in one row
+    with cols[0]:
+        if st.button("Home"):
+            st.query_params.update(page="Home")
+            st.switch_page("1_Home.py")
+    with cols[1]:
+        if st.button("Movies"):
+            st.query_params.update(page="View_Movies", role=st.session_state.role)
+            st.switch_page("pages/2_View_Movies.py")
+    with cols[2]:
+        if st.button("Customers"):
+            st.query_params.update(page="View_Customers", role=st.session_state.role)
+            st.switch_page("pages/5_View_Customers.py")
+    with cols[3]:
+        if st.button("Staffs"):
+            st.query_params.update(page="View_Staff", role=st.session_state.role)
+            st.switch_page("pages/13_View_Staff.py")
+    with cols[4]:
+        if st.button("Rental Records"):
+            st.query_params.update(page="View_Rentals", role=st.session_state.role)
+            st.switch_page("pages/7_View_Rentals.py")
+    with cols[5]:
+        if st.button("Reviews"):
+            st.query_params.update(page="Ratings", role=st.session_state.role)
+            st.switch_page("pages/10_View_Reviews.py")   
+ 
+    conn.commit()
+    conn.close()

@@ -1,11 +1,13 @@
 # ADDS A STAFF MEMBER
 
 import streamlit as st
-from helper.functions import connect_database
+from helper.functions import create_menu, connect_database
 
 # only an administrator can add a staff member
 if "role" not in st.session_state or st.session_state.role != "Administrator":
     st.warning("ACCESS DENIED: You must be an Administrator to access this page.")
+    if st.button("Go Back"):
+        st.switch_page("pages/13_View_Staff.py")
     st.stop()
 
 # add new customer function
@@ -26,7 +28,8 @@ def add_staff(name, email, phone, start_date):
 
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - Add Staff", page_icon="🎬")   # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - Add Staff", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed" )   # sets page title and logo (on tab)
+create_menu()
 st.title("Add Staff")
 st.subheader("Add a new staff member")
 
@@ -47,3 +50,8 @@ with st.form("add_staff_form"):
         else:
             add_staff(name.strip(), email.strip(), phone.strip(), startDate.strftime('%Y-%m-%d'))
             st.success(f"Staff member '{name}' added successfully!")
+
+# Return to View Staff button
+if st.button("🔙 Return to View Staff"):
+    st.query_params.update(page="View_Staff", role=st.session_state.role)
+    st.switch_page("pages/13_View_Staff.py")

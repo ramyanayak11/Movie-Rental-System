@@ -1,19 +1,18 @@
 # HOME PAGE
 
 import streamlit as st
-from helper.functions import create_tables, add_sample_data
+from helper.functions import create_tables, add_sample_data, create_menu
 
 create_tables()     # initialize tables
 add_sample_data()   # add sample data
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - Home", page_icon="🎬")   # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - Home", page_icon="🎬", layout="wide", initial_sidebar_state="collapsed", menu_items=None)   # sets page title and logo (on tab)
+create_menu() # menu button
 st.subheader("Welcome to the Movie Rental System.")
 st.write("")
 
-
 # select role (customer/staff), which determines access to pages
-
 if "role" not in st.session_state:
     st.session_state.role = "Select Role"
 

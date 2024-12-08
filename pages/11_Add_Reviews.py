@@ -1,11 +1,13 @@
 # ADDS A NEW REVIEW
 
 import streamlit as st
-from helper.functions import connect_database, validate_id
+from helper.functions import connect_database, validate_id, create_menu
 
 # only customers can add a review
 if "role" not in st.session_state or st.session_state.role != "Customer":
     st.warning("ACCESS DENIED: You must be a Customer to access this page.")
+    if st.button("Go Back"):
+        st.switch_page("pages/10_View_Reviews.py")
     st.stop()
 
 # add new customer rating
@@ -29,7 +31,8 @@ def add_rating(customer_id, movie_id, rating_score, review, date):
         st.error(f"Error adding review: {e}")
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - Add Review", page_icon="🎬")  # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - Add Review", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed")  # sets page title and logo (on tab)
+create_menu()
 st.title("Add Review")
 st.subheader("Add a new review")
 
@@ -55,3 +58,8 @@ with st.form("add_rating_form"):
             else:
                 add_rating(custID, movieID, rating, review, date.strftime('%Y-%m-%d'))
                 st.success("Review added successfully!")
+
+# Return to View Reviews button
+if st.button("🔙 Return to View Reviews"):
+    st.query_params.update(page="View_Reviews", role=st.session_state.role)
+    st.switch_page("pages/10_View_Reviews.py")

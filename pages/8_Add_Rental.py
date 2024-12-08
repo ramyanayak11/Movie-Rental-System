@@ -1,11 +1,14 @@
 # ADDS A NEW RENTAL ENTRY
+
 import streamlit as st
 from datetime import timedelta
-from helper.functions import connect_database, validate_id
+from helper.functions import create_menu, connect_database, validate_id
 
 # only staff members or administrators can add a rental
 if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
     st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
+    if st.button("Go back to Home"):
+        st.switch_page("1_Home.py")
     st.stop()
 
 # add new rental data
@@ -33,7 +36,8 @@ def add_rental(movie_id, customer_id, rental_date, return_deadline):
         return None
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - Add Rental", page_icon="🎬")   # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - Add Rental", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed")   # sets page title and logo (on tab)
+create_menu()
 st.title("Add Rental")
 st.subheader("Add a new rental")
 
@@ -62,3 +66,7 @@ with st.form("add_rental_form"):
                 - The rental fee is **${rental_rate:.2f}**.
                 - Late fees are **$0.50 per day** beyond the return deadline.
                 """)
+# Return to View Rentals button
+if st.button("🔙 Return to View Rentals"):
+    st.query_params.update(page="View_Rentals", role=st.session_state.role)
+    st.switch_page("pages/7_View_Rentals.py")

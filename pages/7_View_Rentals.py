@@ -3,17 +3,33 @@
 
 import streamlit as st
 import pandas as pd
-from helper.functions import fetch_table_data, connect_database  # Import connect_database
+from helper.functions import fetch_table_data, connect_database, create_menu  # Import connect_database
 
 # only staff members or administrators can view rental records
 if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
     st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
+    if st.button("Go back to Home"):
+        st.switch_page("1_Home.py")
     st.stop()
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - View Rentals", page_icon="🎬")  # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - View Rentals", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed")  # sets page title and logo (on tab)
+create_menu()
 st.title("View Rentals")
 st.subheader("Rentals")
+
+# Buttons for navigation
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("➕ Add Rental"):
+        st.query_params.update(page="Add_Rental", role=st.session_state.role)
+        st.switch_page("pages/8_Add_Rental.py")
+with col2:
+    if st.button("⏎ Return Rental"):
+        st.query_params.update(page="Return_Rental", role=st.session_state.role)
+        st.switch_page("pages/9_Return_Rental.py")
+
 
 # Search options
 search_option = st.selectbox("Search by", ["Rental ID", "Customer ID", "Movie ID"])
@@ -30,22 +46,22 @@ def search_rentals(option, query):
             c.execute('''
                 SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalRate, r.RentalDate, r.ReturnDeadline, r.ReturnDate, r.LateFee, r.TotalPayment
                 FROM RentalRecords r
-                WHERE r.RentalID = ?
-            ''', (query,))
+                WHERE r.RentalID LIKE ?
+            ''', (f"{query}%",))
         elif option == "Customer ID":
             query = int(query)  # Convert to integer for Customer ID
             c.execute('''
                 SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalRate, r.RentalDate, r.ReturnDeadline, r.ReturnDate, r.LateFee, r.TotalPayment
                 FROM RentalRecords r
-                WHERE r.CustomerID = ?
-            ''', (query,))
+                WHERE r.CustomerID LIKE ?
+            ''', (f"{query}%",))
         elif option == "Movie ID":
             query = int(query)  # Convert to integer for Movie ID
             c.execute('''
                 SELECT r.RentalID, r.CustomerID, r.MovieID, r.RentalRate, r.RentalDate, r.ReturnDeadline, r.ReturnDate, r.LateFee, r.TotalPayment
                 FROM RentalRecords r
-                WHERE r.MovieID = ?
-            ''', (query,))
+                WHERE r.MovieID LIKE ?
+            ''', (f"{query}%",))
     except ValueError:
         st.error("Invalid input. Please enter a valid ID number.")
         return [], []  # Return empty lists for both result and columns in case of error

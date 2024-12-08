@@ -1,11 +1,13 @@
 # ADDS A CUSTOMER
 
 import streamlit as st
-from helper.functions import connect_database
+from helper.functions import create_menu, connect_database
 
 # only staff members or administrators can add a customer
 if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
     st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
+    if st.button("Go back to Home"):
+        st.switch_page("1_Home.py")
     st.stop()
 
 # add new customer function
@@ -26,7 +28,8 @@ def add_customer(name, email, phone):
 
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - Add Customer", page_icon="🎬")   # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - Add Customer", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed")   # sets page title and logo (on tab)
+create_menu()
 st.title("Add Customer")
 st.subheader("Add a new customer")
 
@@ -46,3 +49,8 @@ with st.form("add_customer_form"):
         else:
             add_customer(name.strip(), email.strip(), phone.strip())
             st.success(f"Customer '{name}' added successfully!")
+
+# Return to View Customers button
+if st.button("🔙 Return to View Customers"):
+    st.query_params.update(page="View_Customers", role=st.session_state.role)
+    st.switch_page("pages/5_View_Customers.py")

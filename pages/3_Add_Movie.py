@@ -1,11 +1,13 @@
 # ADDS A MOVIE
 
 import streamlit as st
-from helper.functions import connect_database
+from helper.functions import connect_database, create_menu
 
 # only staff members or administrators can add a movie
 if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
     st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
+    if st.button("Go Back"):
+        st.switch_page("pages/2_View_Movies.py") 
     st.stop()
 
 # add new movie function
@@ -27,7 +29,8 @@ def add_movie(title, release_date, genre, length, rental_rate):
 
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - Add Movie", page_icon="🎬")   # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - Add Movie", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed")   # sets page title and logo (on tab)
+create_menu()
 st.title("Add Movie")
 st.subheader("Add a new movie")
 
@@ -47,3 +50,8 @@ with st.form("add_movie_form"):
         else:
             add_movie(title, release_date.strftime('%Y-%m-%d'), genre, int(length), float(rental_rate))
             st.success(f"Movie '{title}' added successfully!")
+
+# Return to View Movies button
+if st.button("🔙 Return to View Movies"):
+    st.query_params.update(page="View_Movies", role=st.session_state.role)
+    st.switch_page("pages/2_View_Movies.py")

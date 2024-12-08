@@ -2,11 +2,13 @@
 
 import streamlit as st
 from datetime import datetime
-from helper.functions import connect_database
+from helper.functions import connect_database, create_menu
 
 # only staff members or administrators can return a rental
 if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
     st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
+    if st.button("Go back to Home"):
+        st.switch_page("1_Home.py")
     st.stop()
 
 # Updates rental when movie is returned
@@ -64,7 +66,8 @@ def return_rental(rental_id, return_date):
                 st.error(f"Error closing the connection: {e}")
 
 # UI details
-st.set_page_config(page_title="Movie Rentals - Return Rental", page_icon="🎬")  # sets page title and logo (on tab)
+st.set_page_config(page_title="Movie Rentals - Return Rental", page_icon="🎬",  layout="wide", initial_sidebar_state="collapsed")  # sets page title and logo (on tab)
+create_menu()
 st.title("Return Rental")
 st.subheader("Return a rental")
 
@@ -82,3 +85,7 @@ with st.form("return_rental_form"):
             if return_rental(rentalID, returnDate.strftime('%Y-%m-%d')):
                 st.success("Rental returned successfully!")
 
+# Return to View Rentals button
+if st.button("🔙 Return to View Rentals"):
+    st.query_params.update(page="View_Rentals", role=st.session_state.role)
+    st.switch_page("pages/7_View_Rentals.py")
