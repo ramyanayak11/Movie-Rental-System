@@ -3,9 +3,9 @@ import streamlit as st
 from datetime import timedelta
 from helper.functions import connect_database, validate_id
 
-# only staff members can add a rental
-if "role" not in st.session_state or st.session_state.role != "Staff":
-    st.warning("ACCESS DENIED: You must be a Staff member to access this page.")
+# only staff members or administrators can add a rental
+if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
+    st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
     st.stop()
 
 # add new rental data

@@ -18,7 +18,7 @@ with (st.form("delete_review_form")):
     custID = st.number_input("Your Customer ID", min_value=1, step=1)
     ratingID = st.number_input("Rating ID", min_value=1, step=1)
     st.warning("BEWARE: You cannot undo this action.")
-    submitted = st.form_submit_button("Delete Movie")
+    submitted = st.form_submit_button("Delete Review")
     if submitted:
         rating_exists = validate_id("Ratings", "RatingID", ratingID)
         customer_exists = validate_id("Customers", "CustomerID", custID)

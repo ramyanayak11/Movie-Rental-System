@@ -3,9 +3,9 @@
 import streamlit as st
 from helper.functions import connect_database
 
-# only staff members can add a customer
-if "role" not in st.session_state or st.session_state.role != "Staff":
-    st.warning("ACCESS DENIED: You must be a Staff member to access this page.")
+# only staff members or administrators can add a customer
+if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
+    st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
     st.stop()
 
 # add new customer function

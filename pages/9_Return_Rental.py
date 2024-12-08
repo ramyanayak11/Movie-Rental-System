@@ -4,9 +4,9 @@ import streamlit as st
 from datetime import datetime
 from helper.functions import connect_database
 
-# only staff members can return a rental
-if "role" not in st.session_state or st.session_state.role != "Staff":
-    st.warning("ACCESS DENIED: You must be a Staff member to access this page.")
+# only staff members or administrators can return a rental
+if "role" not in st.session_state or (st.session_state.role != "Staff" and st.session_state.role != "Administrator"):
+    st.warning("ACCESS DENIED: You must be a Staff member or an Administrator to access this page.")
     st.stop()
 
 # Updates rental when movie is returned

@@ -19,8 +19,8 @@ if "role" not in st.session_state:
 
 role = st.selectbox(        # selection retains prev selected option
     "Select Role",
-    ["Select Role", "Customer", "Staff"],
-    index=["Select Role", "Customer", "Staff"].index(st.session_state.role),
+    ["Select Role", "Customer", "Staff", "Administrator"],
+    index=["Select Role", "Customer", "Staff", "Administrator"].index(st.session_state.role),
 )
 
 if role != "Select Role":   # prints selection confirmation
