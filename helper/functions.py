@@ -131,32 +131,44 @@ def add_sample_data():
     count = c.fetchone()[0]
     if count == 0:
         c.execute("INSERT INTO Staff (StaffID, StaffName, StaffEmail, StaffPhone, StartDate) VALUES"
-                    "(1, 'Carol Brown', 'carol.brown@example.com', '516-549-2819', '2011-04-19'), "
-                    "(2, 'Sarah Lee', 'sarah.lee@example.com', '765-432-1098', '2014-11-20'), "
-                    "(3, 'Leah Smith', 'leah.smith@example.com', '928-644-3990', '2020-02-29'), "
-                    "(4, 'Emily Davis', 'emily.davis@example.com', '987-654-3210', '2020-06-01'), "
-                    "(5, 'John Carter', 'john.carter@example.com', '876-543-2109', '2021-04-15');")
+                  "(1, 'Carol Brown', 'carol.brown@example.com', '516-549-2819', '2010-01-15'), "
+                  "(2, 'Sarah Lee', 'sarah.lee@example.com', '765-432-1098', '2011-06-20'), "
+                  "(3, 'Leah Smith', 'leah.smith@example.com', '928-644-3990', '2012-02-29'), "
+                  "(4, 'Emily Davis', 'emily.davis@example.com', '987-654-3210', '2013-04-01'), "
+                  "(5, 'John Carter', 'john.carter@example.com', '876-543-2109', '2014-09-10'), "
+                  "(6, 'Michael Brown', 'michael.brown@example.com', '321-654-9870', '2015-03-05'), "
+                  "(7, 'Sophia Wilson', 'sophia.wilson@example.com', '432-987-1234', '2016-07-12'), "
+                  "(8, 'David Johnson', 'david.johnson@example.com', '543-210-6789', '2017-01-18'), "
+                  "(9, 'Olivia Martin', 'olivia.martin@example.com', '654-321-9876', '2018-08-03'), "
+                  "(10, 'Liam Scott', 'liam.scott@example.com', '765-432-1987', '2019-10-25'), "
+                  "(11, 'Emma Wright', 'emma.wright@example.com', '876-543-2198', '2020-03-15'), "
+                  "(12, 'Daniel Lee', 'daniel.lee@example.com', '987-654-3120', '2020-09-30'), "
+                  "(13, 'Ava Green', 'ava.green@example.com', '213-456-7890', '2021-05-06'), "
+                  "(14, 'Lucas White', 'lucas.white@example.com', '324-567-8901', '2022-02-14'), "
+                  "(15, 'Isabella King', 'isabella.king@example.com', '435-678-9012', '2023-01-22'), "
+                  "(16, 'James Hall', 'james.hall@example.com', '546-789-0123', '2023-07-11');")
 
     c.execute("SELECT COUNT(*) FROM RentalRecords")
     count = c.fetchone()[0]
     if count == 0:
-        c.execute("INSERT INTO RentalRecords (RentalID, MovieID, CustomerID, RentalRate, RentalDate, ReturnDeadline, ReturnDate, LateFee, TotalPayment) VALUES"
+        c.execute("INSERT INTO RentalRecords (RentalID, MovieID, CustomerID, RentalRate, RentalDate, "
+                  "ReturnDeadline, ReturnDate, LateFee, TotalPayment) VALUES"
                     "(1, 1, 2, 3.99, '2024-11-19', '2024-11-26', '2024-11-26', 0.00, 3.99), "
                     "(2, 3, 4, 3.99, '2024-11-20', '2024-11-27', '2024-11-29', 1.00, 4.99), "
                     "(3, 2, 1, 4.50, '2024-11-22', '2024-11-29', '2024-11-30', 0.50, 5.00), "
-                    "(4, 4, 3, 3.50, '2024-11-23', '2024-11-30', NULL, NULL, NULL), "
+                    "(4, 4, 3, 3.50, '2024-11-23', '2024-11-30', '2024-12-01', 0.50, 4.00), "
                     "(5, 5, 6, 2.99, '2024-11-24', '2024-12-01', '2024-12-01', 0.00, 2.99), "
-                    "(6, 6, 5, 1.99, '2024-11-25', '2024-12-02', NULL, NULL, NULL), "
+                    "(6, 6, 5, 1.99, '2024-11-25', '2024-12-02', '2024-12-03', 0.50, 2.49), "
                     "(7, 7, 8, 2.99, '2024-11-26', '2024-12-03', '2024-12-04', 0.50, 3.49), "
-                    "(8, 8, 7, 1.99, '2024-11-27', '2024-12-04', NULL, NULL, NULL), "
-                    "(9, 9, 10, 2.99, '2024-11-28', '2024-12-05', NULL, NULL, NULL), "
+                    "(8, 8, 7, 1.99, '2024-11-27', '2024-12-04', '2024-12-05', 0.50, 2.49), "
+                    "(9, 9, 10, 2.99, '2024-11-28', '2024-12-05', '2024-12-06', 0.50, 3.49), "
                     "(10, 10, 9, 3.99, '2024-11-29', '2024-12-06', '2024-12-06', 0.00, 3.99), "
-                    "(11, 11, 12, 4.50, '2024-11-30', '2024-12-07', '2024-12-08', 1.00, 5.50), "
-                    "(12, 12, 11, 2.99, '2024-12-01', '2024-12-08', NULL, NULL, NULL), "
+                    "(11, 11, 12, 4.50, '2024-11-30', '2024-12-07', '2024-12-08', 0.50, 5.00), "
+                    "(12, 12, 11, 2.99, '2024-12-01', '2024-12-08', '2024-12-09', 0.50, 3.49), "
                     "(13, 13, 14, 2.99, '2024-12-02', '2024-12-09', '2024-12-09', 0.00, 2.99), "
                     "(14, 14, 13, 4.50, '2024-12-03', '2024-12-10', '2024-12-12', 1.00, 5.50), "
-                    "(15, 15, 16, 3.99, '2024-12-04', '2024-12-11', NULL, NULL, NULL), "
-                    "(16, 16, 15, 2.99, '2024-12-05', '2024-12-12', '2024-12-13', 0.50, 2.99);")
+                    "(15, 15, 16, 3.99, '2024-12-04', '2024-12-11', '2024-12-12', 0.50, 4.49), "
+                    "(16, 16, 15, 2.99, '2024-12-05', '2024-12-12', '2024-12-13', 0.50, 3.49);")
 
     c.execute("SELECT COUNT(*) FROM Ratings")
     count = c.fetchone()[0]
