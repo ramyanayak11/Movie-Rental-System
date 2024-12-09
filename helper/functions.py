@@ -8,9 +8,13 @@ import streamlit as st
 # note: the connect_database() method gives an error when absolute paths aren't used
 hsqldb_jar_path = "/Users/nguyenpham/Downloads/apps/hsqldb-2.7.4/hsqldb/lib/hsqldb.jar"  # for connecting to db
 def connect_database():
-    conn = jdbc.connect("org.hsqldb.jdbcDriver","jdbc:hsqldb:mem:movierentaldb",
+    try:
+        conn = jdbc.connect("org.hsqldb.jdbcDriver","jdbc:hsqldb:mem:movierentaldb",
                         {'user': "SA", 'password': ""}, hsqldb_jar_path)
-    return conn
+        return conn
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+        return None
 
 # create tables function for all tables
 def create_tables():
