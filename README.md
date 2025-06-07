@@ -1,8 +1,8 @@
 # Movie-Rental-System
 
 
-Authors: Ramya Nayak and Thi Dao Nguyen Pham
-December 09, 2024
+Authors: Ramya Nayak and Thi Dao Nguyen Pham</br></br>
+December 09, 2024</br></br>
 
 
 
